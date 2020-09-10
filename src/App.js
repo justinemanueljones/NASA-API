@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react"
+import HttpClient from "./HttpClient"
 
-function App() {
+const App = () => {
+  const [apod, setApod] = useState({})
+
+  useEffect(() => {
+    HttpClient.getApod().then(apodData => {
+      setApod(apodData.data)
+    })
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ maxWidth: 900, padding: 30 }}>
+      <h1>NASA API</h1>
+      <h2>Astronomy Picture of the Day</h2>
+      {apod && (
+        <article>
+          <header>
+            {apod.title} - <i>{apod.date}</i>
+          </header>
+          <img src={apod.url} alt="APOD" width="800" height="auto" />
+          <p>{apod.explanation}</p>
+          <pre
+            style={{
+              overflowX: "auto",
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+            }}
+          >
+            <hr />
+            {JSON.stringify(apod, null, 2)}
+          </pre>
+        </article>
+      )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
+
